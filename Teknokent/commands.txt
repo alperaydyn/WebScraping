@@ -1,0 +1,43 @@
+# 1. navigate to the app folder
+% cd /Users/alperaydin/Google\ Drive/My\ Drive/Projects/WebScraping/Teknokent/
+
+# 2. enable terminal set project
+% gcloud config set project webscraping-386820
+
+# 3. init gcloud, follow instructions
+% gcloud init
+
+# 4. create main.py, create flask app, add routes, if __main__: app.run(host='0.0.0.0', port=8080)
+vim main.py
+
+# 5. create requirements, add libraries
+vim requirements.txt
+
+# 6. create Dockerfile
+vim Dockerfile
+
+# 7. create .dockerignor
+vim .dockerignore
+
+# 8. add selenium docker image to google cloud
+# https://www.roelpeters.be/how-to-deploy-a-scraping-script-and-selenium-in-google-cloud-run/
+
+# 8.1 enable gcloud containerregistry service (https://cloud.google.com/container-registry/docs/enable-service) 
+gcloud services enable containerregistry.googleapis.com
+# access grant: https://cloud.google.com/container-registry/docs/access-control#grant
+
+# 8.2
+docker pull selenium/standalone-chrome
+docker image tag selenium/standalone-chrome us.gcr.io/webscraping-386820/selenium_teknokent
+docker push us.gcr.io/webscraping-386820/selenium_teknokent
+gcloud run deploy teknokent \
+	--image us.gcr.io/webscraping-386820/selenium_teknokent \
+    --port 4444 \
+    --memory 2G
+
+# 8. test app, browse http://0.0.0.0:8080
+python main.py
+
+# 9. deploy app, follow instructions
+gcloud run deploy
+
